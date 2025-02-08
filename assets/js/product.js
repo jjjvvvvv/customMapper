@@ -1,13 +1,19 @@
 document.addEventListener("DOMContentLoaded", function() {
     function getQueryParams() {
         const params = new URLSearchParams(window.location.search);
-        return {
-            lat: parseFloat(params.get('lat')) || 40.7128, // Default: NYC
-            lon: parseFloat(params.get('lon')) || -74.0060,
-            zoom: parseInt(params.get('zoom')) || 12,
-            style: params.get('style') || 'urban'
-        };
-    }
+        let lat = parseFloat(params.get("lat"));
+        let lon = parseFloat(params.get("lon"));
+        let zoom = parseInt(params.get("zoom")) || 12;
+        let style = params.get("style") || "urban";
+    
+        if (isNaN(lat) || isNaN(lon)) {
+            console.error("Invalid lat/lon from URL:", lat, lon);
+            lat = 40.7128; // Default to NYC
+            lon = -74.0060;
+        }
+    
+        return { lat, lon, zoom, style };
+    }    
 
     function loadStaticMap() {
         const { lat, lon, zoom, style } = getQueryParams();

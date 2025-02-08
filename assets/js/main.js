@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", function () {
             maxZoom: 20,
             opacity: 0.8
         })
-    ]);
+    ]);    
 
     let terrainLayer = L.layerGroup([
         L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
@@ -30,20 +30,32 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function updateMap() {
         let location = document.getElementById("locationInput").value;
-        fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${location}`)
+        if (!location) {
+            console.error("Location input is empty.");
+            return;
+        }
+    
+        fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(location)}`)
             .then(response => response.json())
             .then(data => {
                 if (data.length > 0) {
                     let lat = parseFloat(data[0].lat);
                     let lon = parseFloat(data[0].lon);
                     let zoomLevel = data[0].boundingbox ? 10 : 12;
-                    map.flyTo([lat, lon], zoomLevel, { animate: true, duration: 1.5 });
+    
+                    console.log(`Location found: ${lat}, ${lon}`); // Debugging
+    
+                    if (!isNaN(lat) && !isNaN(lon)) {
+                        map.flyTo([lat, lon], zoomLevel, { animate: true, duration: 1.5 });
+                    } else {
+                        console.error("Invalid coordinates returned:", data);
+                    }
                 } else {
-                    alert("Location not found. Try again.");
+                    console.error("Location not found:", location);
                 }
             })
-            .catch(error => console.error('Error fetching location:', error));
-    }
+            .catch(error => console.error("Error fetching location:", error));
+    }    
 
     function setMapStyle(style) {
         map.eachLayer(layer => map.removeLayer(layer));
