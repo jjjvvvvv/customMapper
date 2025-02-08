@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom Map Generator</title>
+    <link rel="stylesheet" href="assets/css/styles.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+</head>
+
+<body>
+    <div class="header">
+        <h2>Custom Map Generator</h2>
+    </div>
+    <div class="input-container">
+        <input type="text" id="locationInput" placeholder="Enter a location...">
+        <button class="submit-button" onclick="updateMap()">Go</button>
+    </div>
+    <div class="map-container">
+        <div id="map"></div>
+    </div>
+    <div class="style-buttons">
+        <button class="style-button" onclick="setMapStyle('urban')">Urban</button>
+        <button class="style-button" onclick="setMapStyle('terrain')">Terrain</button>
+    </div>
+    <button class="buy-button" onclick="goToProductPage()">Buy This Map</button>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="assets/js/main.js"></script>
+</body>
+
+</html>
