@@ -4,30 +4,71 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Custom Map Generator</title>
-    <link rel="stylesheet" href="../assets/css/styles.css">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+    <title>Happy Maps!</title>
+    <script src="https://api.mapbox.com/mapbox-gl-js/v3.0.0/mapbox-gl.js"></script>
+    <link href="https://api.mapbox.com/mapbox-gl-js/v3.0.0/mapbox-gl.css" rel="stylesheet" />
+    <link rel="stylesheet" href="assets/css/styles.css">
 </head>
 
 <body>
-    <div class="header">
-        <h2>Custom Map Generator</h2>
-    </div>
+    <h1>Happy Maps</h1>
     <div class="input-container">
-        <input type="text" id="locationInput" placeholder="Enter a location...">
-        <button class="submit-button" onclick="updateMap()">Go</button>
+        <input type="text" id="locationInput" placeholder="Enter a location">
+        <button onclick="updateMap()">Submit</button>
     </div>
-    <div class="map-container">
+    <div class="map-wrapper">
         <div id="map"></div>
     </div>
-    <div class="style-buttons">
-        <button class="style-button" onclick="setMapStyle('urban')">Urban</button>
-        <button class="style-button" onclick="setMapStyle('terrain')">Terrain</button>
-    </div>
-    <button class="buy-button" onclick="goToProductPage()">Buy This Map</button>
 
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script src="assets/js/main.js"></script>
+    <script>
+        mapboxgl.accessToken = 'pk.eyJ1IjoidGVjbm9sb2dpYy1qdiIsImEiOiJjbTZ3dmlhdmswbnhzMm1vcGZ1ZGViZnkxIn0.r8b94ML5Vkm7nSox91bdxw';
+
+        const map = new mapboxgl.Map({
+            container: 'map',
+            style: 'mapbox://styles/tecnologic-jv/cm6wwvj2500lx01sbcdp74mvy',
+            center: [-73.9712, 40.7831], // Manhattan
+            zoom: 12
+        });
+
+        // Ensure the map resizes properly
+        setTimeout(() => {
+            map.resize();
+        }, 500);
+
+        document.getElementById("locationInput").addEventListener("keypress", function (event) {
+            if (event.key === "Enter") {
+                event.preventDefault();
+                updateMap();
+            }
+        });
+
+        function updateMap() {
+            let location = document.getElementById("locationInput").value;
+            if (!location) {
+                alert("Please enter a location.");
+                return;
+            }
+
+            fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(location)}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.length > 0) {
+                        let lat = parseFloat(data[0].lat);
+                        let lon = parseFloat(data[0].lon);
+
+                        map.flyTo({
+                            center: [lon, lat],
+                            zoom: 12,
+                            essential: true
+                        });
+
+                    } else {
+                        alert("Location not found. Try again.");
+                    }
+                })
+                .catch(error => console.error("Error fetching location:", error));
+        }
+    </script>
 </body>
 
 </html>
